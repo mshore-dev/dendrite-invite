@@ -72,6 +72,12 @@ func main() {
 
 		if password != password2 {
 			c.Render("error", fiber.Map{"error": "passwords do not match"})
+			return nil
+		}
+
+		if len(password) > 32 || len(password) < 8 {
+			c.Render("error", fiber.Map{"error": "password must be between 8-32 characters"})
+			return nil
 		}
 
 		userid, token, err := matrixRegister(username, password)
