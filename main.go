@@ -34,7 +34,21 @@ func main() {
 			return nil
 		}
 
+		log.Printf("invite: %v\n", inv)
+
 		if !inv.Active {
+			log.Printf("invite %s is marked inactive\n", inv.InviteCode)
+			c.Render("invite-expired", fiber.Map{})
+			return nil
+		}
+
+		expired, err := checkInviteExpires(inv.ID)
+		if err != nil {
+			c.Render("error", fiber.Map{"error": "could not check if invite is expired"})
+		}
+
+		if expired {
+			log.Printf("invite %s has (just) expired\n", inv.InviteCode)
 			c.Render("invite-expired", fiber.Map{})
 			return nil
 		}
@@ -117,17 +131,6 @@ func main() {
 		return nil
 	})
 
-	// app.Get("/success", func(c fiber.Ctx) error {
-
-	// c.Render("success", fiber.Map{
-	// 	"instanceName": cfg.InstanceName,
-	// 	"client_url":   cfg.ClientURL,
-	// 	"account":      "@demo:jpeg.city",
-	// })
-
-	// 	return nil
-	// })
-
 	// app.Delete("/invite/:code", func(c fiber.Ctx) error {
 	// 	return nil
 	// })
@@ -144,9 +147,9 @@ func main() {
 	// 	return nil
 	// })
 
-	app.Get("/admin/invites", func(c fiber.Ctx) error {
-		return nil
-	})
+	// app.Get("/admin/invites", func(c fiber.Ctx) error {
+	// 	return nil
+	// })
 
 	// app.Get("/admin/logs", func(c fiber.Ctx) error {
 	// 	return nil
