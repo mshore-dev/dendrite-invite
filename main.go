@@ -23,6 +23,8 @@ func main() {
 	loadConfig()
 	initDb()
 
+	app.Static("/static/", "./static/")
+
 	app.Get("/invite/:code", func(c fiber.Ctx) error {
 
 		inv, err := getInviteByCode(c.Params("code"))
