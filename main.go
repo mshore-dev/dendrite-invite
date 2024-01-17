@@ -30,12 +30,12 @@ func main() {
 		inv, err := getInviteByCode(c.Params("code"))
 		if err != nil {
 			log.Printf("failed to find code %s: %v\n", c.Params("code"), err)
-			c.Render("error", fiber.Map{"error": "invalid code"})
+			c.Render("invite-invalid", fiber.Map{})
 			return nil
 		}
 
 		if !inv.Active {
-			c.Render("error", fiber.Map{"error": "expired code"})
+			c.Render("invite-expired", fiber.Map{})
 			return nil
 		}
 

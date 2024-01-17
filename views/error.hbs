@@ -1,11 +1,15 @@
 <html>
     <head>
-        <title>error! | dendrite-invite</title>
+        <title>error :( | dendrite-invite</title>
+        <link rel="stylesheet" href="/static/pico.min.css">
     </head>
     <body>
-        <div>
-            <h2>So sorry!</h2>
-            <p>An error occured! The message was: {{ error }}</p>
-        </div>
+        <main class="container">
+            <h2>Uh oh! Something went wrong.</h2>
+            <b>Here's what we know:</b> <br>
+            <code>
+                {{ error }}
+            </code>
+        </main>
     </body>
 </html>
