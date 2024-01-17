@@ -23,6 +23,10 @@ func main() {
 	loadConfig()
 	initDb()
 
+	if cfg.Debug {
+		log.Println("debug")
+	}
+
 	app.Static("/static/", "./static/")
 
 	app.Get("/invite/:code", func(c fiber.Ctx) error {
@@ -122,6 +126,8 @@ func main() {
 			"accountId":    userid,
 			"accessToken":  token,
 		})
+
+		incrementInviteUses(inv.ID)
 
 		createLog(inv.ID, c.IP())
 
