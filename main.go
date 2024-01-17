@@ -42,6 +42,7 @@ func main() {
 		c.Render("invite", fiber.Map{
 			"instanceName": cfg.InstanceName,
 			"inviteCode":   inv.InviteCode,
+			"error":        "",
 		})
 		return nil
 	})
@@ -53,7 +54,7 @@ func main() {
 		inv, err := getInviteByCode(c.Params("code"))
 		if err != nil {
 			log.Printf("failed to find code %s: %v\n", c.Params("code"), err)
-			c.Render("error", fiber.Map{"error": "invalid code"})
+			c.Render("error", fiber.Map{"error": "invite is invalid or has expired"})
 			return nil
 		}
 
@@ -61,18 +62,32 @@ func main() {
 		password := c.FormValue("password")
 		password2 := c.FormValue("password2")
 
-		if len(username) > 18 || len(username) < 1 {
-			c.Render("error", fiber.Map{"error": "username must be between 1-18 characters"})
+		log.Println(len(username))
+
+		if len(username) > 18 || len(username) < 4 {
+			c.Render("invite", fiber.Map{
+				"instanceName": cfg.InstanceName,
+				"inviteCode":   inv.InviteCode,
+				"error":        "username must be between 4-18 characters",
+			})
 			return nil
 		}
 
 		if password != password2 {
-			c.Render("error", fiber.Map{"error": "passwords do not match"})
+			c.Render("invite", fiber.Map{
+				"instanceName": cfg.InstanceName,
+				"inviteCode":   inv.InviteCode,
+				"error":        "passwords do not match",
+			})
 			return nil
 		}
 
 		if len(password) > 32 || len(password) < 8 {
-			c.Render("error", fiber.Map{"error": "password must be between 8-32 characters"})
+			c.Render("invite", fiber.Map{
+				"instanceName": cfg.InstanceName,
+				"inviteCode":   inv.InviteCode,
+				"error":        "password must be between 8 and 32 characters",
+			})
 			return nil
 		}
 
@@ -85,9 +100,9 @@ func main() {
 
 		c.Render("success", fiber.Map{
 			"instanceName": cfg.InstanceName,
-			"client_url":   cfg.ClientURL,
-			"account":      userid,
-			"token":        token,
+			"clientUrl":    cfg.ClientURL,
+			"accountId":    userid,
+			"accessToken":  token,
 		})
 
 		createLog(inv.ID, c.IP())

@@ -7,22 +7,31 @@
         <main class="container">
             <h2>You have been invited to {{ instanceName }}!</h2>
 
+            {{#if error}}
+                <article>
+                    Could not register. <br>
+                    <code>
+                        {{ error }}
+                    </code>
+                </article>
+            {{/if}}
+
             <form action="/invite/{{ inviteCode }}/register" method="post">
             
                 <label for="username">
-                    <input type="text" class="username" id="username" placeholder="Username" required>
+                    <input type="text" name="username" id="username" placeholder="Username" required>
                 </label>
 
                 <label for="displayname">
-                    <input type="text" class="displayname" id="displaymame" placeholder="Display Name">
+                    <input type="text" id="displaymame" placeholder="Display Name">
                 </label>
 
                 <label for="password">
-                    <input type="password" name="password" id="password" class="password" placeholder="Password" required>
+                    <input type="password" name="password" id="password" placeholder="Password" required>
                 </label>
 
                 <label for="password2">
-                    <input type="password" name="password2" id="password2" class="password2" placeholder="Confirm password" required>
+                    <input type="password" name="password2" id="password2" placeholder="Confirm password" required>
                 </label>
 
                 <button type="submit">Register</button>
