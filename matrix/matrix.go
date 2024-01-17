@@ -1,4 +1,4 @@
-package main
+package matrix
 
 import (
 	"bytes"
@@ -11,6 +11,8 @@ import (
 	"io"
 	"log"
 	"net/http"
+
+	"github.com/mshore-dev/dendrite-invite/config"
 )
 
 type nonceResponse struct {
@@ -33,8 +35,12 @@ type registerResponse struct {
 	DeviceID    string `json:"device_id"`
 }
 
-func matrixRegister(username, password string) (string, string, error) {
+func Register(username, password string) (string, string, error) {
 	// POST /_synapse/admin/v1/register
+
+	if config.Config.Debug {
+		return "@" + username + ":example.tld", "$reallybiglongaccesstoken$", nil
+	}
 
 	nonce, err := getNonce()
 	if err != nil {
@@ -53,7 +59,7 @@ func matrixRegister(username, password string) (string, string, error) {
 		return "", "", err
 	}
 
-	resp, err := http.Post(cfg.MatrixAPI+"/_synapse/admin/v1/register", "application/json", bytes.NewReader(jsonData))
+	resp, err := http.Post(config.Config.MatrixAPI+"/_synapse/admin/v1/register", "application/json", bytes.NewReader(jsonData))
 	if err != nil {
 		return "", "", err
 	}
@@ -80,7 +86,7 @@ func matrixRegister(username, password string) (string, string, error) {
 
 func getNonce() (string, error) {
 	// GET /_synapse/admin/v1/register
-	resp, err := http.Get(cfg.MatrixAPI + "/_synapse/admin/v1/register")
+	resp, err := http.Get(config.Config.MatrixAPI + "/_synapse/admin/v1/register")
 	if err != nil {
 		return "", err
 	}
@@ -101,7 +107,7 @@ func calcHmac(nonce, user, password string) string {
 
 	// TODO: maybe allow creation of admin users?
 	data := fmt.Sprintf("%s\x00%s\x00%s\x00notadmin", nonce, user, password)
-	mac := hmac.New(sha1.New, []byte(cfg.SharedSecret))
+	mac := hmac.New(sha1.New, []byte(config.Config.SharedSecret))
 	mac.Write([]byte(data))
 	return hex.EncodeToString(mac.Sum(nil))
 }

@@ -1,4 +1,4 @@
-package main
+package database
 
 import (
 	"database/sql"
@@ -10,7 +10,7 @@ import (
 
 var db *sql.DB
 
-type invite struct {
+type Invite struct {
 	ID          int
 	CreatedAt   int64
 	InviteCode  string
@@ -29,7 +29,7 @@ type logItem struct {
 	IP        string
 }
 
-func initDb() {
+func InitDB() {
 	// TODO: not hardcode this
 	var err error
 	db, err = sql.Open("sqlite", "dendrite-invite.db")
@@ -66,25 +66,25 @@ func createDb() {
 	}
 }
 
-func getInviteByCode(code string) (invite, error) {
+func GetInviteByCode(code string) (Invite, error) {
 	row := db.QueryRow("select * from invites where invitecode = ?", code)
 
-	var inv invite
+	var inv Invite
 	err := row.Scan(&inv.ID, &inv.CreatedAt, &inv.InviteCode, &inv.ExpireTime, &inv.ExpireUses, &inv.CurrentUses, &inv.CreatedBy, &inv.Active)
 	if err != nil {
-		return invite{}, err
+		return Invite{}, err
 	}
 
 	return inv, nil
 }
 
-func getInviteByID(id int) (invite, error) {
+func GetInviteByID(id int) (Invite, error) {
 	row := db.QueryRow("select * from invites where id = ?", id)
 
-	var inv invite
+	var inv Invite
 	err := row.Scan(&inv.ID, &inv.CreatedAt, &inv.InviteCode, &inv.ExpireTime, &inv.ExpireUses, &inv.CurrentUses, &inv.CreatedBy, &inv.Active)
 	if err != nil {
-		return invite{}, err
+		return Invite{}, err
 	}
 
 	return inv, nil
@@ -94,7 +94,7 @@ func getInviteByID(id int) (invite, error) {
 
 // }
 
-func createInvite(inv invite) error {
+func CreateInvite(inv Invite) error {
 	tx, err := db.Begin()
 	if err != nil {
 		return err
@@ -118,9 +118,9 @@ func createInvite(inv invite) error {
 	return nil
 }
 
-func incrementInviteUses(id int) error {
+func IncrementInviteUses(id int) error {
 
-	inv, err := getInviteByID(id)
+	inv, err := GetInviteByID(id)
 	if err != nil {
 		return err
 	}
@@ -143,7 +143,7 @@ func incrementInviteUses(id int) error {
 
 	// automatically check if it expires
 	// useful to "use count" expires, although not time-based
-	_, err = checkInviteExpires(inv.ID)
+	_, err = CheckInviteExpires(inv.ID)
 	if err != nil {
 		return err
 	}
@@ -151,10 +151,10 @@ func incrementInviteUses(id int) error {
 	return nil
 }
 
-func checkInviteExpires(id int) (bool, error) {
+func CheckInviteExpires(id int) (bool, error) {
 	row := db.QueryRow("select * from invites where id = ?", id)
 
-	var inv invite
+	var inv Invite
 	err := row.Scan(&inv.ID, &inv.CreatedAt, &inv.InviteCode, &inv.ExpireTime, &inv.ExpireUses, &inv.CurrentUses, &inv.CreatedBy, &inv.Active)
 	if err != nil {
 		return false, err
@@ -163,18 +163,18 @@ func checkInviteExpires(id int) (bool, error) {
 	// ExpireTime will be set to -1 if it does not expire at a certain time
 	if inv.ExpireTime != -1 && time.Now().Unix() >= inv.ExpireTime {
 		// expire
-		return true, setInviteActive(id, false)
+		return true, SetInviteActive(id, false)
 	}
 
 	if inv.CurrentUses >= inv.ExpireUses {
 		// expire
-		return true, setInviteActive(id, false)
+		return true, SetInviteActive(id, false)
 	}
 
 	return false, nil
 }
 
-func setInviteActive(id int, active bool) error {
+func SetInviteActive(id int, active bool) error {
 	tx, err := db.Begin()
 	if err != nil {
 		return err
@@ -210,23 +210,23 @@ func setInviteActive(id int, active bool) error {
 
 // }
 
-func createLog(inviteid int, ip string) error {
-	tx, err := db.Begin()
-	if err != nil {
-		return err
-	}
+// func createLog(inviteid int, ip string) error {
+// 	tx, err := db.Begin()
+// 	if err != nil {
+// 		return err
+// 	}
 
-	stmt, err := tx.Prepare("insert into logs (inviteid, timestamp, ip) values (?, ?, ?)")
-	if err != nil {
-		return err
-	}
+// 	stmt, err := tx.Prepare("insert into logs (inviteid, timestamp, ip) values (?, ?, ?)")
+// 	if err != nil {
+// 		return err
+// 	}
 
-	stmt.Exec(inviteid, time.Now().Unix(), ip)
-	err = tx.Commit()
-	if err != nil {
-		return err
-	}
+// 	stmt.Exec(inviteid, time.Now().Unix(), ip)
+// 	err = tx.Commit()
+// 	if err != nil {
+// 		return err
+// 	}
 
-	return nil
-	// INSERT INTO "main"."logs" ("ID", "InviteID", "Timestamp", "IP") VALUES ('1', '', '', '');
-}
+// 	return nil
+// 	// INSERT INTO "main"."logs" ("ID", "InviteID", "Timestamp", "IP") VALUES ('1', '', '', '');
+// }
