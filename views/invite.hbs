@@ -1,0 +1,22 @@
+<html>
+    <head>
+        <title>invitation! | dendrite-invite</title>
+    </head>
+    <body>
+        <div>
+            <h2>You have been invited to <i>{{ instanceName }}</i>!</h2>
+            <p>
+                Please pick a username and password:
+            </p>
+            <form action="/invite/{{ inviteCode }}/register" method="post">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username"><br>
+                <label for="password">Password</label>
+                <input type="password" name="password" id="password"><br>
+                <label for="password2">Confirm password:</label>
+                <input type="password" name="password2" id="password2"><br>
+                <input type="submit" value="Register">
+            </form>
+        </div>
+    </body>
+</html>

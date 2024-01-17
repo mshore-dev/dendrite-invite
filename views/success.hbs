@@ -1,0 +1,24 @@
+<html>
+    <head>
+        <title>success! | dendrite-invite</title>
+    </head>
+    <body>
+        <div>
+            <h2>You have registered on <i>{{ instanceName }}</i>!</h2>
+            <p>
+                Your account (<code>{{ account }}</code>) has been created! <br>
+                Awesome! You're now part of the Matrix network. <br>
+                You can log into the web client at <a href="{{ client_url }}">{{ client_url }}</a>, <br>
+                or use another client of your choice. Ensure the "homeserver" option is set to <code>https://{{ instanceName }}</code>. <br>
+                You can also log in on a mobile device using the Element Android or iOS apps! <br>
+                <hr>
+                <pre>
+                    <code>
+                        Additional information: <br>
+                        Access Token: {{ token }}
+                    </code>
+                </pre>
+            </p>
+        </div>
+    </body>
+</html>
