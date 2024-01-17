@@ -6,19 +6,20 @@ import (
 	"time"
 
 	_ "github.com/glebarez/go-sqlite"
+	"github.com/lithammer/shortuuid/v4"
 )
 
 var db *sql.DB
 
 type Invite struct {
-	ID          int
-	CreatedAt   int64
-	InviteCode  string
-	ExpireTime  int64
-	ExpireUses  int
-	CurrentUses int
-	CreatedBy   string
-	Active      bool
+	ID          int    `json:"id"`
+	CreatedAt   int64  `json:"created_at"`
+	InviteCode  string `json:"invite_code"`
+	ExpireTime  int64  `json:"expire_time"`
+	ExpireUses  int    `json:"expire_uses"`
+	CurrentUses int    `json:"current_uses"`
+	CreatedBy   string `json:"created_by"`
+	Active      bool   `json:"active"`
 }
 
 type logItem struct {
@@ -94,28 +95,37 @@ func GetInviteByID(id int) (Invite, error) {
 
 // }
 
-func CreateInvite(inv Invite) error {
+func CreateInvite(inv Invite) (Invite, error) {
+
+	if inv.InviteCode == "" {
+		log.Println("invitecode empty")
+		inv.InviteCode = shortuuid.New()
+	}
+
+	inv.Active = true
+	inv.CreatedAt = time.Now().Unix()
+
 	tx, err := db.Begin()
 	if err != nil {
-		return err
+		return Invite{}, err
 	}
 
 	stmt, err := tx.Prepare("insert into invites (createdat, invitecode, expiretime, expireuses, currentuses, createdby, active) values (?, ?, ?, ?, ?, ?, ?)")
 	if err != nil {
-		return err
+		return Invite{}, err
 	}
 
-	_, err = stmt.Exec(time.Now().Unix(), inv.InviteCode, inv.ExpireTime, inv.ExpireUses, 0, inv.CreatedBy, 1)
+	_, err = stmt.Exec(inv.CreatedAt, inv.InviteCode, inv.ExpireTime, inv.ExpireUses, 0, inv.CreatedBy, 1)
 	if err != nil {
-		return err
+		return Invite{}, err
 	}
 
 	err = tx.Commit()
 	if err != nil {
-		return err
+		return Invite{}, err
 	}
 
-	return nil
+	return inv, nil
 }
 
 func IncrementInviteUses(id int) error {

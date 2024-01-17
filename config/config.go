@@ -13,6 +13,7 @@ type configuration struct {
 	InstanceName string `toml:"instance_name"`
 	SharedSecret string `toml:"shared_secret"`
 	ClientURL    string `toml:"client_url"`
+	AdminAPIKey  string `toml:"admin_api_key"`
 
 	Debug bool `toml:"debug"`
 }

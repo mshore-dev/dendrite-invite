@@ -9,7 +9,8 @@ import (
 	"github.com/mshore-dev/dendrite-invite/config"
 	"github.com/mshore-dev/dendrite-invite/database"
 
-	"github.com/mshore-dev/dendrite-invite/routes/invite"
+	routes_api "github.com/mshore-dev/dendrite-invite/routes/api"
+	routes_invite "github.com/mshore-dev/dendrite-invite/routes/invite"
 )
 
 func main() {
@@ -28,7 +29,8 @@ func main() {
 	config.LoadConfig()
 	database.InitDB()
 
-	invite.RegisterRoutes(app)
+	routes_invite.RegisterRoutes(app)
+	routes_api.RegisterRoutes(app)
 
 	app.Static("/static/", "./static/")
 
