@@ -32,12 +32,6 @@ func main() {
 			return nil
 		}
 
-		// if inv.ID == 0 {
-		// 	// idk about this check
-		// 	c.Render("error", fiber.Map{"error": "invalid code"})
-		// 	return nil
-		// }
-
 		if !inv.Active {
 			c.Render("error", fiber.Map{"error": "expired code"})
 			return nil
