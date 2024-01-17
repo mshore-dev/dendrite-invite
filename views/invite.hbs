@@ -6,6 +6,7 @@
     <body>
         <main class="container">
             <h2>You have been invited to {{ instanceName }}!</h2>
+            <b> {{ inviter }}  has invited you to chat on Matrix</b> <hr>
 
             {{#if error}}
                 <article>
@@ -23,7 +24,7 @@
                 </label>
 
                 <label for="displayname">
-                    <input type="text" id="displaymame" placeholder="Display Name">
+                    <input type="text" id="displaymame" placeholder="Display Name (Optional)">
                 </label>
 
                 <label for="password">

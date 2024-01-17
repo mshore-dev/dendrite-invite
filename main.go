@@ -56,6 +56,7 @@ func main() {
 		c.Render("invite", fiber.Map{
 			"instanceName": cfg.InstanceName,
 			"inviteCode":   inv.InviteCode,
+			"inviter":      inv.CreatedBy,
 			"error":        "",
 		})
 		return nil
@@ -82,6 +83,7 @@ func main() {
 			c.Render("invite", fiber.Map{
 				"instanceName": cfg.InstanceName,
 				"inviteCode":   inv.InviteCode,
+				"inviter":      inv.CreatedBy,
 				"error":        "username must be between 4-18 characters",
 			})
 			return nil
@@ -91,6 +93,7 @@ func main() {
 			c.Render("invite", fiber.Map{
 				"instanceName": cfg.InstanceName,
 				"inviteCode":   inv.InviteCode,
+				"inviter":      inv.CreatedBy,
 				"error":        "passwords do not match",
 			})
 			return nil
@@ -100,6 +103,7 @@ func main() {
 			c.Render("invite", fiber.Map{
 				"instanceName": cfg.InstanceName,
 				"inviteCode":   inv.InviteCode,
+				"inviter":      inv.CreatedBy,
 				"error":        "password must be between 8 and 32 characters",
 			})
 			return nil
