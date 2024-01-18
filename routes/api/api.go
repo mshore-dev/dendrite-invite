@@ -17,8 +17,8 @@ func RegisterRoutes(app *fiber.App) {
 	}))
 
 	api.Post("/invite/create", apiInviteCreate)
-	api.Get("/invite/:type/:identifier", apiInviteGet)
-	api.Put("/invite/:type/:identifier", apiInviteUpdate)
+	api.Get("/invite/:type<regex(^(code|id)$)>/:identifier", apiInviteGet)
+	api.Put("/invite/:type<regex(^(code|id)$)>/:identifier", apiInviteUpdate)
 
 }
 
