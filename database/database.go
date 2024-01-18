@@ -9,17 +9,6 @@ import (
 
 var db *sql.DB
 
-type Invite struct {
-	ID          int    `json:"id"`
-	CreatedAt   int64  `json:"created_at"`
-	InviteCode  string `json:"invite_code"`
-	ExpireTime  int64  `json:"expire_time"`
-	ExpireUses  int    `json:"expire_uses"`
-	CurrentUses int    `json:"current_uses"`
-	CreatedBy   string `json:"created_by"`
-	Active      bool   `json:"active"`
-}
-
 type logItem struct {
 	ID        int
 	InviteID  string
@@ -64,40 +53,3 @@ func createDb() {
 		panic(err)
 	}
 }
-
-// func getLog() {
-
-// }
-
-// func getLogsByInviteID() {
-
-// }
-
-// func getLogsByIP() {
-
-// }
-
-// func getAllLogs() {
-
-// }
-
-// func createLog(inviteid int, ip string) error {
-// 	tx, err := db.Begin()
-// 	if err != nil {
-// 		return err
-// 	}
-
-// 	stmt, err := tx.Prepare("insert into logs (inviteid, timestamp, ip) values (?, ?, ?)")
-// 	if err != nil {
-// 		return err
-// 	}
-
-// 	stmt.Exec(inviteid, time.Now().Unix(), ip)
-// 	err = tx.Commit()
-// 	if err != nil {
-// 		return err
-// 	}
-
-// 	return nil
-// 	// INSERT INTO "main"."logs" ("ID", "InviteID", "Timestamp", "IP") VALUES ('1', '', '', '');
-// }

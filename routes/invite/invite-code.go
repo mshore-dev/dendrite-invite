@@ -108,7 +108,7 @@ func inviteCodeRegister(c fiber.Ctx) error {
 
 	database.IncrementInviteUses(inv.ID)
 
-	// createLog(inv.ID, c.IP())
+	database.CreateLog(inv.ID, userid, c.IP())
 
 	return nil
 }

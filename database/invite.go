@@ -7,6 +7,17 @@ import (
 	"github.com/lithammer/shortuuid/v4"
 )
 
+type Invite struct {
+	ID          int    `json:"id"`
+	CreatedAt   int64  `json:"created_at"`
+	InviteCode  string `json:"invite_code"`
+	ExpireTime  int64  `json:"expire_time"`
+	ExpireUses  int    `json:"expire_uses"`
+	CurrentUses int    `json:"current_uses"`
+	CreatedBy   string `json:"created_by"`
+	Active      bool   `json:"active"`
+}
+
 func GetInviteByCode(code string) (Invite, error) {
 	row := db.QueryRow("select * from invites where invitecode = ?", code)
 
