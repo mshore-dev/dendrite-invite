@@ -53,6 +53,10 @@ func CreateInvite(inv Invite) (Invite, error) {
 		inv.InviteCode = shortuuid.New()
 	}
 
+	if inv.ExpireTime == 0 {
+		inv.ExpireTime = -1
+	}
+
 	inv.Active = true
 	inv.CreatedAt = time.Now().Unix()
 
