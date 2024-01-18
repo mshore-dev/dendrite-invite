@@ -70,7 +70,7 @@ func CreateInvite(inv Invite) (Invite, error) {
 		return Invite{}, err
 	}
 
-	_, err = stmt.Exec(inv.CreatedAt, inv.InviteCode, inv.ExpireTime, inv.ExpireUses, 0, inv.CreatedBy, 1)
+	res, err := stmt.Exec(inv.CreatedAt, inv.InviteCode, inv.ExpireTime, inv.ExpireUses, 0, inv.CreatedBy, 1)
 	if err != nil {
 		return Invite{}, err
 	}
@@ -79,6 +79,13 @@ func CreateInvite(inv Invite) (Invite, error) {
 	if err != nil {
 		return Invite{}, err
 	}
+
+	id, err := res.LastInsertId()
+	if err != nil {
+		return Invite{}, err
+	}
+
+	inv.ID = int(id)
 
 	return inv, nil
 }
