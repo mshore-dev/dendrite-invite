@@ -5,8 +5,10 @@
     </head>
     <body>
         <main class="container">
-            <h2>You have been invited to {{ instanceName }}!</h2>
-            <b> {{ inviter }}  has invited you to chat on Matrix</b> <hr>
+            <hgroup>
+                <h2>You have been invited to {{ instanceName }}!</h2>
+                <p> <i>{{ inviter }}</i>  has invited you to chat on Matrix</p>
+            </hgroup>
 
             {{#if error}}
                 <article>
@@ -17,7 +19,8 @@
                 </article>
             {{/if}}
 
-            <form action="/invite/{{ inviteCode }}/register" method="post">
+            <article>
+                <form action="/invite/{{ inviteCode }}/register" method="post">
             
                 <label for="username">
                     <input type="text" name="username" id="username" placeholder="Username" required>
@@ -37,7 +40,8 @@
 
                 <button type="submit">Register</button>
 
-            </form>
+              </form>
+            </article>
         </main>
     </body>
 </html>
